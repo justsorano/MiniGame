@@ -33,7 +33,6 @@ const _createCell = (value) =>{
    function flipHandler(){
       const e = card.querySelectorAll('[data-flip]')
       e.forEach(i => i.classList.add('flipshow'))
-   
    }
       wrap.append(card)
    }
