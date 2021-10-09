@@ -32,39 +32,23 @@ body{
    margin: 0 10px;
    padding: 0 10px;
 }
-.hide{
-   display: none !important;
-}
-.tr250{
-   transform: translateY(-250%) !important;
-}
 .show{
    display: flex !important;
-}
-.tr100{
-   transform: translateY(100px) !important;
 }
 .tr0{
    transform: translateY(0) !important;
 }
-.cell{
-   background: transparent;
-   width: 100px;
-   height: 100px;
-   border: 1px solid white;
-   cursor: pointer;
-}
 .widthLarge{
-   width: 200px;
-   height: 200px;
-}
-.widthMedium{
    width: 125px;
    height: 125px;
 }
-.widthSoft{
+.widthMedium{
    width: 100px;
    height: 100px;
+}
+.widthSoft{
+   width: 75px;
+   height: 75px;
 }
 #timer{
    position: fixed;

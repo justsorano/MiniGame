@@ -1,9 +1,10 @@
 import '../scss/style.scss'
+
 const _createCell = (value) =>{
    let cellWidth = ''
-   if(value === '10'){
+   if(value === '20'){
       cellWidth = 'widthLarge'
-   } else if (value === '20'){
+   } else if (value === '40'){
       cellWidth = 'widthMedium'
    } else {
       cellWidth = 'widthSoft'
@@ -11,10 +12,30 @@ const _createCell = (value) =>{
    const wrap = document.createElement('div')
    wrap.classList.add('field_3')
    for(let i = 0;i < value;i++){
-      const cell = document.createElement('div')
-      cell.classList.add('cell')
-      cell.classList.add(cellWidth)
-      wrap.append(cell)
+      const card = document.createElement('div')
+      card.classList.add('flip-card')
+      card.dataset.flip
+      card.insertAdjacentHTML(
+         'afterbegin',
+      `
+      <div class="flip-card-inner" data-flip>
+         <div class="flip-card-front">
+         </div>
+         <div class="flip-card-back">
+         <img src="https://png.pngtree.com/png-vector/20191116/ourlarge/pngtree-businessman-avatar-icon-vector-download-vector-user-icon-avatar-silhouette-social-png-image_1991050.jpg" alt="img">
+         </div>
+      </div>
+      `
+      )
+      card.addEventListener('click',flipHandler)
+      card.classList.add(cellWidth)
+
+   function flipHandler(){
+      const e = card.querySelectorAll('[data-flip]')
+      e.forEach(i => i.classList.add('flipshow'))
+   
+   }
+      wrap.append(card)
    }
    return wrap
 }
@@ -62,7 +83,7 @@ const _createCell = (value) =>{
          setTimeout(() => {
          selector.classList.add('tr0')
          }, ms)
-
+         resolve()
       })
    }
 

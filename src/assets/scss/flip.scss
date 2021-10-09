@@ -1,0 +1,43 @@
+.flip-card {
+  background-color: transparent;
+  perspective: 1000px; 
+  border: 1px solid white;
+  cursor: pointer;
+  &::selection{
+	  color: unset;
+  }
+}
+
+.flip-card-inner {
+	img{
+		width: 100%;
+		height: 100%;
+	}
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform .8s ease-in;
+  transform-style: preserve-3d;
+}
+
+// .flip-card-front.flipshow{
+// 	.flip-card .flip-card-inner {
+// 		transform: rotateY(180deg);
+// 	}
+// }
+.flipshow{
+	transform: rotateY(180deg);
+}
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; 
+  backface-visibility: hidden;
+}
+
+.flip-card-back {
+	background-image: url('../img/sky.jpg');
+	transform: rotateY(180deg);
+}
