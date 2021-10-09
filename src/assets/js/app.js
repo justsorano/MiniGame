@@ -1,5 +1,7 @@
 import '../scss/style.scss'
-
+import { Images } from './images'
+import { Modal } from './Modal'
+const image = [...Images.getArrWithRandomIndex(0,10),...Images.getArrWithRandomIndex(0,10),...Images.getArrWithRandomIndex(0,10),...Images.getArrWithRandomIndex(0,10),...Images.getArrWithRandomIndex(0,10),...Images.getArrWithRandomIndex(0,10)]
 const _createCell = (value) =>{
    let cellWidth = ''
    if(value === '20'){
@@ -22,7 +24,7 @@ const _createCell = (value) =>{
          <div class="flip-card-front">
          </div>
          <div class="flip-card-back">
-         <img src="https://png.pngtree.com/png-vector/20191116/ourlarge/pngtree-businessman-avatar-icon-vector-download-vector-user-icon-avatar-silhouette-social-png-image_1991050.jpg" alt="img">
+         <img src="${image[i]}" alt="img">
          </div>
       </div>
       `
@@ -30,9 +32,16 @@ const _createCell = (value) =>{
       card.addEventListener('click',flipHandler)
       card.classList.add(cellWidth)
 
-   function flipHandler(){
-      const e = card.querySelectorAll('[data-flip]')
-      e.forEach(i => i.classList.add('flipshow'))
+   function flipHandler(e){
+      if(e.target.classList.contains('flip-card-front')){
+         const dataflip = card.querySelectorAll('[data-flip]')
+         dataflip.forEach(i => i.classList.add('flipshow'))
+         e.target.dataset.flip = 'true'
+         const fliped = card.querySelectorAll('[data-flip="true"]')
+      } else {
+         return
+      }
+
    }
       wrap.append(card)
    }
@@ -40,6 +49,10 @@ const _createCell = (value) =>{
 }
 
 (function gameCore(){
+   const modal = new Modal({title:'Игра закончена',Handler(){
+      this.close()
+      window.location.reload()
+   }})
    const container = document.querySelector('.container')
    const startBtn = document.querySelector('.field_1__btn')
    const btnsSettings = document.querySelectorAll('.btn__option')
@@ -58,6 +71,7 @@ const _createCell = (value) =>{
       setInterval(decreaseTime,1000)
    }
    function finishGame(){
+      Modal.open()
    }
    function setTime(value){
       timeCounter.textContent = `00:${value}`

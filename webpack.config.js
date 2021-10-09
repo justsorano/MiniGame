@@ -12,7 +12,7 @@ module.exports = {
    },
    plugins:[
       new HTMLPlugin({
-         template:'index.html'
+         template:'./src/index.html'
       }),
       new CleanWebpackPlugin()
    ],
@@ -25,7 +25,18 @@ module.exports = {
             'css-loader',
             'sass-loader'
          ]
-         }
+         },
+         {
+            test: /\.(png|jpg|gif)$/i,
+            use: [
+               {
+                  loader: 'url-loader',
+                  options: {
+                     mimetype: false,
+                  },
+               },
+            ],
+         },
       ]
    }
 }

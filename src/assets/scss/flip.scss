@@ -19,12 +19,6 @@
   transition: transform .8s ease-in;
   transform-style: preserve-3d;
 }
-
-// .flip-card-front.flipshow{
-// 	.flip-card .flip-card-inner {
-// 		transform: rotateY(180deg);
-// 	}
-// }
 .flipshow{
 	transform: rotateY(180deg);
 }
