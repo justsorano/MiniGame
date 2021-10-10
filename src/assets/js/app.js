@@ -1,16 +1,8 @@
 import '../scss/style.scss'
-import { Images } from './images'
 import { Modal } from './Modal'
-const image = [...Images.getArrWithRandomIndex(0,10),...Images.getArrWithRandomIndex(0,10),...Images.getArrWithRandomIndex(0,10),...Images.getArrWithRandomIndex(0,10),...Images.getArrWithRandomIndex(0,10),...Images.getArrWithRandomIndex(0,10)]
+import { Util } from './Util'
+
 const _createCell = (value) =>{
-   let cellWidth = ''
-   if(value === '20'){
-      cellWidth = 'widthLarge'
-   } else if (value === '40'){
-      cellWidth = 'widthMedium'
-   } else {
-      cellWidth = 'widthSoft'
-   }
    const wrap = document.createElement('div')
    wrap.classList.add('field_3')
    for(let i = 0;i < value;i++){
@@ -24,24 +16,40 @@ const _createCell = (value) =>{
          <div class="flip-card-front">
          </div>
          <div class="flip-card-back">
-         <img src="${image[i]}" alt="img">
+         <img src="${Util.image[i]}" alt="img">
          </div>
       </div>
       `
       )
       card.addEventListener('click',flipHandler)
-      card.classList.add(cellWidth)
+      card.classList.add(Util._checkValue(value))
 
    function flipHandler(e){
       if(e.target.classList.contains('flip-card-front')){
-         const dataflip = card.querySelectorAll('[data-flip]')
-         dataflip.forEach(i => i.classList.add('flipshow'))
+         const dataflip = card.querySelector('[data-flip]')
+         dataflip.classList.add('flipshow')
          e.target.dataset.flip = 'true'
-         const fliped = card.querySelectorAll('[data-flip="true"]')
+         let flipped = []
+         function test(){
+            flipped.push(wrap.querySelector('[data-flip="true"]'))
+            if(flipped[0] === e.target){
+               return 
+            }
+            flipped[1] = e.target
+            if(flipped[0].parentNode.querySelector('img').src === flipped[1].parentNode.querySelector('img').src){
+               alert('yes')
+            } else {
+               flipped = []
+               flipped.push(e.target)
+               setTimeout(() => {
+                  flipped.forEach(i => i.parentNode.classList.remove('flipshow'))
+               }, 1000);
+            }
+         }
+         test()
       } else {
          return
       }
-
    }
       wrap.append(card)
    }
@@ -49,10 +57,10 @@ const _createCell = (value) =>{
 }
 
 (function gameCore(){
-   const modal = new Modal({title:'Игра закончена',Handler(){
-      this.close()
-      window.location.reload()
-   }})
+   // const modal = new Modal({title:'Игра закончена',Handler(){
+   //    this.close()
+   //    window.location.reload()
+   // }})
    const container = document.querySelector('.container')
    const startBtn = document.querySelector('.field_1__btn')
    const btnsSettings = document.querySelectorAll('.btn__option')
@@ -71,7 +79,7 @@ const _createCell = (value) =>{
       setInterval(decreaseTime,1000)
    }
    function finishGame(){
-      Modal.open()
+      // Modal.open()
    }
    function setTime(value){
       timeCounter.textContent = `00:${value}`
@@ -93,11 +101,10 @@ const _createCell = (value) =>{
          setTimeout(() => {
             selector.classList.add('show')
          }, 0);
-         setTimeout(() => {
-         selector.classList.add('tr0')
-         }, ms)
          resolve()
-      })
+      }).then(setTimeout(() => {
+         selector.classList.add('tr0')
+         }, ms))
    }
 
    // handlers
