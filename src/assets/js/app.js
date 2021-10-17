@@ -23,44 +23,40 @@ const _createCell = (value) =>{
       )
       card.addEventListener('click',flipHandler)
       card.classList.add(Util._checkValue(value))
+      wrap.append(card)
+   }
 
-   function flipHandler(e){
+   function flipHandler(e) {
       if(e.target.classList.contains('flip-card-front')){
-         const dataflip = card.querySelector('[data-flip]')
-         dataflip.classList.add('flipshow')
-         e.target.dataset.flip = 'true'
-         let flipped = []
-         function test(){
-            flipped.push(wrap.querySelector('[data-flip="true"]'))
-            if(flipped[0] === e.target){
-               return 
-            }
-            flipped[1] = e.target
-            if(flipped[0].parentNode.querySelector('img').src === flipped[1].parentNode.querySelector('img').src){
-               alert('yes')
-            } else {
-               flipped = []
-               flipped.push(e.target)
-               setTimeout(() => {
-                  flipped.forEach(i => i.parentNode.classList.remove('flipshow'))
-               }, 1000);
-            }
-         }
-         test()
-      } else {
+      const element = e.target.parentNode
+      if(element.dataset.flip === 'done'){
+         element.classList.add('flipshow')
          return
       }
-   }
-      wrap.append(card)
+      element.dataset.flip = 'true'
+      element.classList.add('flipshow')
+      let arr = wrap.querySelectorAll('[data-flip = "true"]')
+      const [first,second] = arr
+            if(first.querySelector('img').src === second.querySelector('img').src){
+            const [first,second] = arr
+            first.dataset.flip = 'done'
+            second.dataset.flip = 'done'
+            arr = []
+            } else {
+               arr.forEach(i =>{
+                     setTimeout(() => {
+                        i.dataset.flip = ''
+                        i.classList.remove('flipshow')
+                        arr = []
+                     }, 1000);
+               })
+            }
+      }
    }
    return wrap
 }
 
 (function gameCore(){
-   // const modal = new Modal({title:'Игра закончена',Handler(){
-   //    this.close()
-   //    window.location.reload()
-   // }})
    const container = document.querySelector('.container')
    const startBtn = document.querySelector('.field_1__btn')
    const btnsSettings = document.querySelectorAll('.btn__option')
@@ -79,7 +75,6 @@ const _createCell = (value) =>{
       setInterval(decreaseTime,1000)
    }
    function finishGame(){
-      // Modal.open()
    }
    function setTime(value){
       timeCounter.textContent = `00:${value}`
@@ -123,7 +118,7 @@ const _createCell = (value) =>{
    }
 
    function startbtnHandler(){
-      field1.className = 'field_2'
+      field1.className = 'field_1'
       show(100,field2)
       this.removeEventListener('click',startbtnHandler)
    }
