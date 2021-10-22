@@ -63,7 +63,7 @@ const _createCell = (value) =>{
    const field1 = document.getElementById('field_1')
    const field2 = document.getElementById('field_2')
    const timeCounter = document.querySelector('#timer > span')
-   let time = 60;
+   let time = 300;
 
    (function _setup(){
       show(100,field1)
@@ -75,20 +75,23 @@ const _createCell = (value) =>{
       setInterval(decreaseTime,1000)
    }
    function finishGame(){
+      alert('Ку')
    }
-   function setTime(value){
-      timeCounter.textContent = `00:${value}`
+   function setTime(string){
+      timeCounter.textContent = string
    }
    function decreaseTime(){
-      if(time === 0){
-         finishGame()
-      } else {
-         let current = --time
-         if(current < 10){
-            current = `0${current}`
+         let seconds = time % 60
+         let minutes = time / 60 % 60
+         if (time === 0) {
+            finishGame()
          }
-         setTime(current)
-      }
+         if(seconds < 10){
+            seconds = `0${seconds}`
+         }
+         let strTimer = `${Math.trunc(minutes)}:${seconds}`
+         setTime(strTimer)
+         --time
    }
 
    function show(ms,selector){
@@ -111,7 +114,7 @@ const _createCell = (value) =>{
       container.append(field3)
       setTimeout(() => {
          document.getElementById('timer').style.display = 'flex'
-         timeCounter.textContent = '01:00'
+         timeCounter.textContent = 'GO'
          startGame()
       }, 1500);
       
