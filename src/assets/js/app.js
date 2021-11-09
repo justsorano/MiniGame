@@ -82,7 +82,7 @@ const _createCell = (value,finish) =>{
    const field2 = document.getElementById('field_2')
    const timeCounter = document.querySelector('#timer > span')
    const score = document.getElementById('score')
-   let time = 2;
+   let time = 300;
 
    (function _setup(){
       show(100,field1)
