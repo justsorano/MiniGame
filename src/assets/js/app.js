@@ -1,9 +1,11 @@
 import '../scss/style.scss'
-import { Modal } from './Modal'
 import { Util } from './Util'
-
-const _createCell = (value) =>{
+import {Modal} from './Modal'
+const _createCell = (value,finish) =>{
    const wrap = document.createElement('div')
+   const overlay = document.querySelector('.overlay')
+   const score = document.getElementById('score')
+   let counter = 0
    wrap.classList.add('field_3')
    for(let i = 0;i < value;i++){
       const card = document.createElement('div')
@@ -25,32 +27,48 @@ const _createCell = (value) =>{
       card.classList.add(Util._checkValue(value))
       wrap.append(card)
    }
-
+   function setScore(value){
+      score.textContent = value
+   }
    function flipHandler(e) {
-      if(e.target.classList.contains('flip-card-front')){
-      const element = e.target.parentNode
-      if(element.dataset.flip === 'done'){
-         element.classList.add('flipshow')
-         return
-      }
-      element.dataset.flip = 'true'
-      element.classList.add('flipshow')
-      let arr = wrap.querySelectorAll('[data-flip = "true"]')
-      const [first,second] = arr
-            if(first.querySelector('img').src === second.querySelector('img').src){
-            const [first,second] = arr
-            first.dataset.flip = 'done'
-            second.dataset.flip = 'done'
-            arr = []
-            } else {
-               arr.forEach(i =>{
-                     setTimeout(() => {
-                        i.dataset.flip = ''
-                        i.classList.remove('flipshow')
-                        arr = []
-                     }, 1000);
-               })
+      try{
+         if(e.target.classList.contains('flip-card-front')){
+            const element = e.target.parentNode
+            if(element.dataset.flip === 'done'){
+               element.classList.add('flipshow')
+               return
             }
+            element.dataset.flip = 'true'
+            element.classList.add('flipshow')
+            let arr = wrap.querySelectorAll('[data-flip = "true"]')
+            if(arr.length === 2){
+               overlay.classList.add('showOverlay')
+            setTimeout(() =>{
+               overlay.classList.remove('showOverlay')
+            },1700)
+         }
+            const [first,second] = arr
+                  if(Object.is(arr[0].querySelector('img').src,arr[1].querySelector('img').src)){ 
+                  first.dataset.flip = 'done'
+                  second.dataset.flip = 'done'
+                  ++counter
+                  setScore(counter)
+                  if(counter === value / 2){
+                     return finish('win')
+                  }
+                  arr = []
+                  } else {
+                     arr.forEach(i =>{
+                           setTimeout(() => {
+                              i.dataset.flip = ''
+                              i.classList.remove('flipshow')
+                              arr = []
+                           }, 1000);
+                     })
+                  }
+            }
+      } catch{
+
       }
    }
    return wrap
@@ -63,36 +81,65 @@ const _createCell = (value) =>{
    const field1 = document.getElementById('field_1')
    const field2 = document.getElementById('field_2')
    const timeCounter = document.querySelector('#timer > span')
-   let time = 300;
+   const score = document.getElementById('score')
+   let time = 2;
 
    (function _setup(){
       show(100,field1)
       startBtn.addEventListener('click',startbtnHandler)
       btnsSettings.forEach(item => item.addEventListener('click',settingsHandler))
    })()
-
-   function startGame(){
-      setInterval(decreaseTime,1000)
+   function createModal(text){
+      return new Modal({
+         title:text,
+         score:score.textContent,
+         handlers:{
+            start(){
+               return window.location.reload()
+            },
+            decline(){
+               window.opener = self;
+               window.close();
+            }
+         }
+      })
    }
-   function finishGame(){
-      alert('Ку')
+   function startGame(){
+      const interval = setInterval(decreaseTime,1000)
+      function decreaseTime(){
+         let seconds = time % 60
+         let minutes = time / 60 % 60
+         if (time === 0) {
+            clearInterval(interval)
+            setTime(`00:00`)
+            finishGame('lose')
+         } else {
+            if(seconds < 10){
+               seconds = `0${seconds}`
+            }
+            let strTimer = `${Math.trunc(minutes)}:${seconds}`
+            setTime(strTimer)
+            --time
+         }
+
+   }
+   }
+   function finishGame(string){
+      if(string === 'lose'){
+         const modal = createModal('Вы проиграли')
+         setTimeout(() => modal.open(),0)
+         return
+      } else {
+         const modal = createModal('Победа')
+         modal.open()
+         return
+      }
+
    }
    function setTime(string){
       timeCounter.textContent = string
    }
-   function decreaseTime(){
-         let seconds = time % 60
-         let minutes = time / 60 % 60
-         if (time === 0) {
-            finishGame()
-         }
-         if(seconds < 10){
-            seconds = `0${seconds}`
-         }
-         let strTimer = `${Math.trunc(minutes)}:${seconds}`
-         setTime(strTimer)
-         --time
-   }
+
 
    function show(ms,selector){
       return new Promise((resolve,reject) =>{
@@ -108,12 +155,13 @@ const _createCell = (value) =>{
    // handlers
    function settingsHandler(e){
       const value = e.target.dataset.net
-      const field3 = _createCell(value)
+      const field3 = _createCell(value,finishGame)
       field2.className = 'field_2'
       show(700,field3)
       container.append(field3)
       setTimeout(() => {
          document.getElementById('timer').style.display = 'flex'
+         document.querySelector('.score').style.display = 'flex'
          timeCounter.textContent = 'GO'
          startGame()
       }, 1500);

@@ -64,3 +64,36 @@ body{
    top: 50px;
    right: 15px;
 }
+.score{
+   position: fixed;
+   display: none;
+   align-items: center;
+   justify-content: center;
+   width: 150px;
+   height: 50px;
+   background: transparent;
+   color: white;
+   font-size: 30px;
+   font-weight: 600;
+   top: 100px;
+   right: 15px;
+}
+.overlay{
+   width: 100%;
+   height: 100%;
+   position: fixed;
+   z-index: 1000;
+   background: transparent;
+   display: none;
+}
+.overlay.showOverlay{
+      display: block;
+}
+._success{
+   color: white;
+   background: rgb(5, 245, 37);
+}
+._primary{
+   color: white;
+   background: rgb(60, 19, 243);
+}
