@@ -1,9 +1,11 @@
 import '../scss/style.scss'
-import { Modal } from './Modal'
 import { Util } from './Util'
-
-const _createCell = (value) =>{
+import {Modal} from './Modal'
+const _createCell = (value,finish) =>{
    const wrap = document.createElement('div')
+   const overlay = document.querySelector('.overlay')
+   const score = document.getElementById('score')
+   let counter = 0
    wrap.classList.add('field_3')
    for(let i = 0;i < value;i++){
       const card = document.createElement('div')
@@ -23,81 +25,134 @@ const _createCell = (value) =>{
       )
       card.addEventListener('click',flipHandler)
       card.classList.add(Util._checkValue(value))
-
-   function flipHandler(e){
-      if(e.target.classList.contains('flip-card-front')){
-         const dataflip = card.querySelector('[data-flip]')
-         dataflip.classList.add('flipshow')
-         e.target.dataset.flip = 'true'
-         let flipped = []
-         function test(){
-            flipped.push(wrap.querySelector('[data-flip="true"]'))
-            if(flipped[0] === e.target){
-               return 
-            }
-            flipped[1] = e.target
-            if(flipped[0].parentNode.querySelector('img').src === flipped[1].parentNode.querySelector('img').src){
-               alert('yes')
-            } else {
-               flipped = []
-               flipped.push(e.target)
-               setTimeout(() => {
-                  flipped.forEach(i => i.parentNode.classList.remove('flipshow'))
-               }, 1000);
-            }
-         }
-         test()
-      } else {
-         return
-      }
-   }
       wrap.append(card)
+   }
+   function setScore(value){
+      score.textContent = value
+   }
+   function flipHandler(e) {
+      try{
+         if(e.target.classList.contains('flip-card-front')){
+            const element = e.target.parentNode
+            if(element.dataset.flip === 'done'){
+               element.classList.add('flipshow')
+               return
+            }
+            element.dataset.flip = 'true'
+            element.classList.add('flipshow')
+            let arr = wrap.querySelectorAll('[data-flip = "true"]')
+            if(arr.length === 2){
+               overlay.classList.add('showOverlay')
+            setTimeout(() =>{
+               overlay.classList.remove('showOverlay')
+            },1700)
+         }
+            const [first,second] = arr
+                  if(Object.is(arr[0].querySelector('img').src,arr[1].querySelector('img').src)){ 
+                  first.dataset.flip = 'done'
+                  second.dataset.flip = 'done'
+                  ++counter
+                  setScore(counter)
+                  arr = []
+                  if(counter === value / 2){
+                     finish('win',counter)
+                     overlay.classList.add('showOverlay')
+                     clearInterval(document.i)
+                     return
+                  }
+                  } else {
+                     arr.forEach(i =>{
+                           setTimeout(() => {
+                              i.dataset.flip = ''
+                              i.classList.remove('flipshow')
+                              arr = []
+                           }, 1000);
+                     })
+                  }
+            }
+      } catch{
+
+      }
    }
    return wrap
 }
-
-(function gameCore(){
-   // const modal = new Modal({title:'Игра закончена',Handler(){
-   //    this.close()
-   //    window.location.reload()
-   // }})
-   const container = document.querySelector('.container')
-   const startBtn = document.querySelector('.field_1__btn')
-   const btnsSettings = document.querySelectorAll('.btn__option')
-   const field1 = document.getElementById('field_1')
-   const field2 = document.getElementById('field_2')
-   const timeCounter = document.querySelector('#timer > span')
-   let time = 60;
-
-   (function _setup(){
-      show(100,field1)
-      startBtn.addEventListener('click',startbtnHandler)
-      btnsSettings.forEach(item => item.addEventListener('click',settingsHandler))
-   })()
-
-   function startGame(){
-      setInterval(decreaseTime,1000)
+export class GameCore{
+   container = document.querySelector('.container')
+   startBtn = document.querySelector('.field_1__btn')
+   btnsSettings = document.querySelectorAll('.btn__option')
+   field1 = document.getElementById('field_1')
+   field2 = document.getElementById('field_2')
+   timeCounter = document.querySelector('#timer > span')
+   score = document.getElementById('score')
+   time = 300
+   constructor(){
+      this.#setup()
    }
-   function finishGame(){
-      // Modal.open()
+   // run game core
+   #setup(){
+      this.show(100,this.field1)
+      this.startBtn.addEventListener('click',this.startbtnHandler)
+      this.btnsSettings.forEach(item => item.addEventListener('click',this.settingsHandler))
    }
-   function setTime(value){
-      timeCounter.textContent = `00:${value}`
-   }
-   function decreaseTime(){
-      if(time === 0){
-         finishGame()
-      } else {
-         let current = --time
-         if(current < 10){
-            current = `0${current}`
+   // game general
+   startGame(){
+      const interval = setInterval(decreaseTime.bind(this),1000)
+      document.i = interval
+      function decreaseTime(){
+         let seconds = this.time % 60
+         let minutes = this.time / 60 % 60
+         if (this.time === 0) {
+            clearInterval(interval)
+            this.setTime(`00:00`)
+            this.finishGame('lose',this.score.textContent)
+         } else {
+            if(seconds < 10){
+               seconds = `0${seconds}`
+            }
+            let strTimer = `${Math.trunc(minutes)}:${seconds}`
+            this.setTime(strTimer)
+            --this.time
          }
-         setTime(current)
+
       }
    }
 
-   function show(ms,selector){
-      return new Promise((resolve,reject) =>{
+   finishGame(string,score){
+      const overlay = document.querySelector('.overlay')
+      const createModal = text =>{
+         return new Modal({
+            title:text,
+            score:score,
+            handlers:{
+               start(){
+                  return window.location.reload()
+               },
+               decline(){
+                  window.opener = self;
+                  window.close();
+               }
+            }
+         })
+      }
+      overlay.classList.add('showOverlay')
+      if(string === 'lose'){
+         const modal = createModal('Вы проиграли')
+         setTimeout(() => modal.open(),0)
+         return
+      } else {
+         const modal = createModal('Победа!')
+         setTimeout(() => modal.open(),0)
+         return
+      }
+
+   }
+
+   setTime(string){
+      this.timeCounter.textContent = string
+   }
+
+   show(ms,selector){
+      return new Promise(resolve =>{
          setTimeout(() => {
             selector.classList.add('show')
          }, 0);
@@ -106,26 +161,25 @@ const _createCell = (value) =>{
          selector.classList.add('tr0')
          }, ms))
    }
-
    // handlers
-   function settingsHandler(e){
+   settingsHandler = (e) =>{
       const value = e.target.dataset.net
-      const field3 = _createCell(value)
-      field2.className = 'field_2'
-      show(700,field3)
-      container.append(field3)
+      const field3 = _createCell(value,this.finishGame)
+      this.field2.className = 'field_2'
+      this.show(700,field3)
+      this.container.append(field3)
       setTimeout(() => {
          document.getElementById('timer').style.display = 'flex'
-         timeCounter.textContent = '01:00'
-         startGame()
+         document.querySelector('.score').style.display = 'flex'
+         this.timeCounter.textContent = 'GO'
+         this.startGame()
       }, 1500);
       
    }
 
-   function startbtnHandler(){
-      field1.className = 'field_2'
-      show(100,field2)
-      this.removeEventListener('click',startbtnHandler)
+   startbtnHandler = ()=>{
+      this.field1.className = 'field_1'
+      this.show(100,this.field2)
+      removeEventListener('click',this.startbtnHandler)
    }
-
-})()
+}

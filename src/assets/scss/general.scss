@@ -1,66 +1,99 @@
-@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
-body{
-   width: 100%;
-   height: 100%;
-   background-image: url('https://www.fireworks-videos.com/wp-content/uploads/2020/06/2020-06-06_dark-night-sky_stars-and-slight-silky-clouds_2160p.jpg');
-   color: white;
-   font-size: 16px;
-   font-family: 'Shadows Into Light', cursive;
-   box-sizing: border-box;
+@import url("https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap");
+body {
+  width: 100%;
+  height: 100%;
+  background-image: url("https://www.fireworks-videos.com/wp-content/uploads/2020/06/2020-06-06_dark-night-sky_stars-and-slight-silky-clouds_2160p.jpg");
+  color: white;
+  font-size: 16px;
+  font-family: "Shadows Into Light", cursive;
+  box-sizing: border-box;
 }
-.container{
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   flex-direction: column;
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
-.btn{
-   padding: 10px 0;
-   border: 2px solid white;
-   border-radius: 15px;
-   background: transparent;
-   color: white;
-   font-size: 30px;
-   letter-spacing: 1px;
-   cursor: pointer;
-   font-family: 'Shadows Into Light', cursive;
-   &:hover{
-      box-shadow: 4px 1px 10px white,4px 1px 20px white;
-   }
+.btn {
+  padding: 10px 0;
+  border: 2px solid white;
+  border-radius: 15px;
+  background: transparent;
+  color: white;
+  font-size: 30px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  font-family: "Shadows Into Light", cursive;
+  &:hover {
+    box-shadow: 4px 1px 10px white, 4px 1px 20px white;
+  }
 }
-.btn__option{
-   margin: 0 10px;
-   padding: 0 10px;
+.btn__option {
+  margin: 0 10px;
+  padding: 0 10px;
 }
-.show{
-   display: flex !important;
+.show {
+  display: flex !important;
 }
-.tr0{
-   transform: translateY(0) !important;
+.tr0 {
+  transform: translateY(0) !important;
 }
-.widthLarge{
-   width: 125px;
-   height: 125px;
+.widthLarge {
+  width: 125px;
+  height: 125px;
 }
-.widthMedium{
-   width: 100px;
-   height: 100px;
+.widthMedium {
+  width: 100px;
+  height: 100px;
 }
-.widthSoft{
-   width: 75px;
-   height: 75px;
+.widthSoft {
+  width: 75px;
+  height: 75px;
 }
-#timer{
-   position: fixed;
-   display: none;
-   align-items: center;
-   justify-content: center;
-   width: 150px;
-   height: 50px;
-   background: transparent;
-   color: white;
-   font-size: 30px;
-   font-weight: 600;
-   top: 50px;
-   right: 15px;
+#timer {
+  position: fixed;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 50px;
+  background: transparent;
+  color: white;
+  font-size: 30px;
+  font-weight: 600;
+  top: 50px;
+  right: 15px;
+}
+.score {
+  position: fixed;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 50px;
+  background: transparent;
+  color: white;
+  font-size: 30px;
+  font-weight: 600;
+  top: 100px;
+  right: 15px;
+}
+.overlay {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 1000;
+  background: transparent;
+  display: none;
+}
+.overlay.showOverlay {
+  display: block;
+}
+._success {
+  color: white;
+  background: rgb(5, 245, 37);
+}
+._primary {
+  color: white;
+  background: rgb(60, 19, 243);
 }
